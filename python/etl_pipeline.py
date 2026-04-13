@@ -21,7 +21,7 @@ engine = create_engine(
     f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
 
-print("✅ Connected to PostgreSQL")
+print("Connected to PostgreSQL")
 
 # =========================
 # LOAD CSV FILES
@@ -32,7 +32,7 @@ products = pd.read_csv("./data/raw/products.csv")
 stores = pd.read_csv("./data/raw/stores.csv")
 calendar = pd.read_csv("./data/raw/calendar.csv")
 
-print("✅ CSV files loaded")
+print("CSV files loaded")
 
 # =========================
 # DATA CLEANING
@@ -57,7 +57,7 @@ calendar.drop_duplicates(inplace=True)
 sales.dropna(inplace=True)
 customers.dropna(inplace=True)
 
-print("✅ Data cleaned")
+print("Data cleaned")
 
 # =========================
 # FEATURE ENGINEERING
@@ -73,7 +73,7 @@ customers['age_group'] = pd.cut(
     labels=['Young', 'Adult', 'Mid-age', 'Senior']
 )
 
-print("✅ Features engineered")
+print("Features engineered")
 
 # =========================
 # ALIGN SALES WITH DATABASE SCHEMA
@@ -102,7 +102,7 @@ with engine.connect() as conn:
     """))
     conn.commit()
 
-print("🧹 Existing data cleared")
+print("Existing data cleared")
 
 # =========================
 # LOAD INTO DATABASE
@@ -111,20 +111,20 @@ print("🧹 Existing data cleared")
 try:
     # Load dimension tables first
     customers.to_sql("customers", engine, if_exists="append", index=False)
-    print("✅ Customers loaded")
+    print("Customers loaded")
 
     products.to_sql("products", engine, if_exists="append", index=False)
-    print("✅ Products loaded")
+    print("Products loaded")
 
     stores.to_sql("stores", engine, if_exists="append", index=False)
-    print("✅ Stores loaded")
+    print("Stores loaded")
 
     calendar.to_sql("calendar", engine, if_exists="append", index=False)
-    print("✅ Calendar loaded")
+    print("Calendar loaded")
 
     # Load fact table last
     sales.to_sql("sales", engine, if_exists="append", index=False)
-    print("🚀 Sales loaded successfully")
+    print("Sales loaded successfully")
 
 except Exception as e:
-    print("❌ Error during loading:", e)
+    print("Error during loading:", e)
